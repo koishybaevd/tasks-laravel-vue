@@ -14,11 +14,21 @@ class TaskController extends Controller
         return $tasks;
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        Task::create([
-            'text' => request('text')
+        $this->validate($request, [
+            'text'    => 'required|min:1|max:255'
         ]);
+
+        Task::create([
+            'text' => $request->input('text')
+        ]);
+    }
+
+    public function toggle(Task $task)
+    {
+        $task->completed = !$task->completed;
+        $task->save();
     }
 
     public function destroy(Task $task)

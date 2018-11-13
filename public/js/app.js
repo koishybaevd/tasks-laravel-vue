@@ -50025,12 +50025,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             tasks: [],
-            newTask: ''
+            newTask: '',
+            errors: []
         };
     },
 
@@ -50056,14 +50071,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this2.newTask = '';
                 _this2.fetchData();
             }).catch(function (err) {
+                return _this2.errors.push(err.response.data.message);
+            });
+        },
+        toggleTask: function toggleTask(id) {
+            var _this3 = this;
+
+            axios.post('/api/tasks/' + id + '/toggle').then(function (response) {
+                _this3.fetchData();
+            }).catch(function (err) {
                 return console.log(err);
             });
         },
         deleteTask: function deleteTask(id) {
-            var _this3 = this;
+            var _this4 = this;
 
             axios.delete('/api/tasks/' + id).then(function (response) {
-                _this3.fetchData();
+                _this4.fetchData();
             }).catch(function (err) {
                 return console.log(err);
             });
@@ -50135,6 +50159,20 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
+      _vm.errors.length !== 0
+        ? _c("div", { staticClass: "container my-3" }, [
+            _c("div", { staticClass: "alert alert-danger mt-2 mb-0" }, [
+              _c(
+                "ul",
+                { staticClass: "mb-0" },
+                _vm._l(_vm.errors, function(error) {
+                  return _c("li", { key: error }, [_vm._v(_vm._s(error))])
+                })
+              )
+            ])
+          ])
+        : _vm._e(),
+      _vm._v(" "),
       _c("div", { staticClass: "container" }, [
         _c("div", { staticClass: "row justify-content-center" }, [
           _c("div", { staticClass: "col-md-8" }, [
@@ -50156,18 +50194,41 @@ var render = function() {
                       [
                         _c("span", [_vm._v(_vm._s(task.text))]),
                         _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-sm btn-outline-danger",
-                            on: {
-                              click: function($event) {
-                                _vm.deleteTask(task.id)
+                        _c("div", [
+                          _c(
+                            "button",
+                            {
+                              class: [
+                                { "btn-outline-success": task.completed },
+                                "btn btn-sm btn-outline-secondary"
+                              ],
+                              on: {
+                                click: function($event) {
+                                  _vm.toggleTask(task.id)
+                                }
                               }
-                            }
-                          },
-                          [_vm._v("Delete")]
-                        )
+                            },
+                            [
+                              _c("i", {
+                                staticClass: "fas",
+                                class: task.completed ? "fa-check" : "fa-minus"
+                              })
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-sm btn-outline-danger",
+                              on: {
+                                click: function($event) {
+                                  _vm.deleteTask(task.id)
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "fas fa-trash-alt" })]
+                          )
+                        ])
                       ]
                     )
                   })

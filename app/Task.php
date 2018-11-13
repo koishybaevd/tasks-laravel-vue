@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     protected $fillable = [
-        'text'
+        'text', 'completed'
     ];
+
+    public $timestamps = false;
+
+    public function toggleTask()
+    {
+        $this->completed= !$this->completed;
+        return $this;
+    }
 }
